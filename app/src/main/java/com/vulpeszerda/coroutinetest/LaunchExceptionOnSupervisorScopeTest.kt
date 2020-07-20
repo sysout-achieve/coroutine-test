@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.yield
 
 /**
  * SupervisorScope throw exception when it`s child job throws.
@@ -79,7 +80,10 @@ fun launchExceptionOnSupervisorScopeTest4() {
                 launch {
                     throw Exception("exception test")
                 }
+                // throw Exception("exception test")
             }
+            yield()
+            Log.d(TAG, "1111")
         } catch (e: Exception) {
             Log.d(TAG, "catch exception: ${e.message}")
         }

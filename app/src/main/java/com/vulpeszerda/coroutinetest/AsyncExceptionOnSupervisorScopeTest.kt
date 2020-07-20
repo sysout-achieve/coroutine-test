@@ -65,3 +65,25 @@ fun asyncExceptionOnSupervisorScopeTest3() {
         }
     }
 }
+
+/**
+ * If we wrap `await` with try-catch, then supervisorScope will not throws.
+ */
+fun asyncExceptionOnSupervisorScopeTest4() {
+    val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        Log.d(TAG, "uncaught exception: ${throwable.message}")
+    }
+    val scope = CoroutineScope(Job() + exceptionHandler + Dispatchers.Main)
+    scope.launch {
+        try {
+            supervisorScope {
+                val job = async {
+                    throw Exception("exception test")
+                }
+                job.await() // this throws exception
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "catch exception : ${e.message}")
+        }
+    }
+}
